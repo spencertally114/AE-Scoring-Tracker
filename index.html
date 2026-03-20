@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Scorer — Spencer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0c;
+  --bg2: #131313;
+  --bg3: #1a1a1a;
+  --bg4: #222;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.11);
+  --text: #edeae4;
+  --text2: #7a7870;
+  --text3: #3f3e3a;
+  --accent: #c9f060;
+  --accent-dim: rgba(201,240,96,0.10);
+  --warn: #f0a832;
+  --warn-dim: rgba(240,168,50,0.10);
+  --danger: #f05252;
+  --danger-dim: rgba(240,82,82,0.09);
+  --gen: #52b8f0;
+  --health: #b852f0;
+  --dev: #f0c852;
+  --r: 10px;
+  --rlg: 16px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  padding: 0 0 80px;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(12,12,12,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+}
+.topbar-brand {
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text3); font-weight: 500;
+}
+.topbar-nav { display: flex; align-items: center; gap: 8px; }
+.topbar-nav button {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text2); font-family: 'DM Mono', monospace; font-size: 12px;
+  padding: 5px 10px; cursor: pointer; transition: all 0.15s;
+}
+.topbar-nav button:hover { border-color: var(--border2); color: var(--text); }
+.topbar-date {
+  font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text2);
+  min-width: 130px; text-align: center;
+}
+
+/* ── MAIN LAYOUT ── */
+.app { max-width: 780px; margin: 0 auto; padding: 40px 32px 0; }
+
+/* ── HERO SCORE ── */
+.hero {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+  margin-bottom: 36px;
+}
+.hero-main {
+  grid-column: 1 / 2;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--rlg); padding: 24px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  min-height: 130px;
+}
+.hero-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.hero-score { font-size: 64px; font-weight: 800; line-height: 1; letter-spacing: -0.04em; transition: color 0.3s; }
+.hero-target { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); }
+
+.hero-stat {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--rlg); padding: 20px 22px;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.hero-stat-val { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-top: 8px; }
+
+/* progress bar */
+.progress-wrap { margin-bottom: 36px; }
+.progress-track {
+  height: 3px; background: var(--bg3); border-radius: 2px; overflow: visible;
+  position: relative;
+}
+.progress-fill {
+  height: 100%; border-radius: 2px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1), background 0.3s;
+  position: relative;
+}
+.progress-fill::after {
+  content: ''; position: absolute; right: -1px; top: -3px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: inherit; transition: background 0.3s;
+}
+.progress-ticks {
+  display: flex; justify-content: space-between;
+  margin-top: 6px; font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--text3);
+}
+
+/* ── PILLARS ── */
+.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 32px; }
+.pillar {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.pillar-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); }
+.pillar-val { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500; }
+
+/* ── SECTION HEADERS ── */
+.section-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px; margin-top: 28px;
+}
+.section-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.section-title { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); font-weight: 500; }
+
+/* ── INPUT ROWS ── */
+.rows { display: flex; flex-direction: column; gap: 6px; }
+.row {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 14px 18px;
+  display: grid; grid-template-columns: 1fr auto auto;
+  align-items: center; gap: 16px;
+  transition: border-color 0.15s;
+}
+.row:hover { border-color: var(--border2); }
+.row-meta { display: flex; flex-direction: column; gap: 3px; }
+.row-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.row-rule { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); }
+.row-pts {
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  color: var(--text3); min-width: 44px; text-align: right;
+  transition: color 0.2s;
+}
+.row-pts.earned { color: var(--accent); }
+.row-control { display: flex; align-items: center; gap: 8px; }
+.row-control button {
+  width: 30px; height: 30px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg3);
+  color: var(--text2); font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s; line-height: 1; font-family: 'DM Mono', monospace;
+}
+.row-control button:hover { border-color: var(--border2); color: var(--text); background: var(--bg4); }
+.row-control button:active { transform: scale(0.94); }
+.row-val {
+  font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500;
+  min-width: 32px; text-align: center; color: var(--text);
+}
+
+/* micro progress for ratio metrics */
+.ratio-pip-wrap { display: flex; gap: 3px; margin-top: 5px; }
+.ratio-pip {
+  height: 2px; border-radius: 1px; background: var(--bg4); flex: 1;
+  transition: background 0.2s;
+}
+.ratio-pip.filled { background: var(--accent); }
+
+/* toggle row */
+.toggle-row {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 14px 18px;
+  display: grid; grid-template-columns: 1fr auto auto;
+  align-items: center; gap: 16px;
+  transition: border-color 0.15s;
+}
+.toggle-row:hover { border-color: var(--border2); }
+.switch { position: relative; width: 44px; height: 24px; cursor: pointer; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch-track {
+  position: absolute; inset: 0;
+  background: var(--bg4); border: 1px solid var(--border2);
+  border-radius: 12px; transition: all 0.2s;
+}
+.switch-track::before {
+  content: ''; position: absolute;
+  width: 18px; height: 18px; border-radius: 50%;
+  top: 2px; left: 2px;
+  background: var(--text3); transition: all 0.2s;
+}
+.switch input:checked + .switch-track { background: var(--accent-dim); border-color: var(--accent); }
+.switch input:checked + .switch-track::before { transform: translateX(20px); background: var(--accent); }
+
+/* ── WEEK VIEW ── */
+.week-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
+.week-cell {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 14px 12px; text-align: center;
+  transition: border-color 0.2s;
+}
+.week-cell.is-today { border-color: rgba(201,240,96,0.3); background: rgba(201,240,96,0.04); }
+.week-cell.is-current { border-color: var(--border2); }
+.week-cell-day { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+.week-cell-score { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; }
+.week-cell-bar { height: 2px; border-radius: 1px; margin-top: 8px; background: var(--bg4); overflow: hidden; }
+.week-cell-bar-fill { height: 100%; border-radius: 1px; transition: width 0.3s; }
+.week-summary {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 14px; padding: 14px 18px;
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r);
+}
+.week-summary-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); }
+.week-summary-val { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.app > * { animation: fadeUp 0.35s ease both; }
+.app > *:nth-child(1) { animation-delay: 0.05s; }
+.app > *:nth-child(2) { animation-delay: 0.10s; }
+.app > *:nth-child(3) { animation-delay: 0.15s; }
+.app > *:nth-child(4) { animation-delay: 0.20s; }
+.app > *:nth-child(5) { animation-delay: 0.25s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .app { padding: 24px 16px 0; }
+  .topbar { padding: 0 16px; }
+  .hero { grid-template-columns: 1fr 1fr; }
+  .hero-main { grid-column: 1 / -1; }
+  .pillars { grid-template-columns: 1fr; }
+  .week-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .week-cell { padding: 10px 6px; }
+  .week-cell-score { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">Daily Scorer</div>
+  <div class="topbar-nav">
+    <button onclick="changeDay(-1)">&#8592;</button>
+    <div class="topbar-date" id="topbar-date"></div>
+    <button onclick="changeDay(1)">&#8594;</button>
+  </div>
+  <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)" id="topbar-status"></div>
+</div>
+
+<div class="app">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-main">
+      <div>
+        <div class="hero-label">Today's score</div>
+        <div class="hero-score" id="hero-score">0</div>
+      </div>
+      <div class="hero-target" id="hero-target">— / 8 pts to quota pace</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-label">Week avg</div>
+      <div class="hero-stat-val" id="hero-avg" style="color:var(--text2)">—</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-top:4px">target 8.0</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-label">Status</div>
+      <div class="hero-stat-val" id="hero-status" style="font-size:15px;margin-top:10px;color:var(--text2)">—</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="progress-ticks">
+      <span>0</span><span>2</span><span>4</span><span>6</span><span>8</span>
+    </div>
+  </div>
+
+  <!-- PILLARS -->
+  <div class="pillars">
+    <div class="pillar">
+      <div>
+        <div class="pillar-label">Pipeline gen</div>
+      </div>
+      <div class="pillar-val" id="pillar-gen" style="color:var(--gen)">0</div>
+    </div>
+    <div class="pillar">
+      <div>
+        <div class="pillar-label">Pipeline health</div>
+      </div>
+      <div class="pillar-val" id="pillar-health" style="color:var(--health)">0</div>
+    </div>
+    <div class="pillar">
+      <div>
+        <div class="pillar-label">Personal dev</div>
+      </div>
+      <div class="pillar-val" id="pillar-dev" style="color:var(--dev)">0</div>
+    </div>
+  </div>
+
+  <!-- PIPELINE GEN -->
+  <div class="section-head">
+    <div class="section-dot" style="background:var(--gen)"></div>
+    <div class="section-title">Pipeline generation</div>
+  </div>
+  <div class="rows">
+
+    <div class="row">
+      <div class="row-meta">
+        <div class="row-name">Prospects added to cadence</div>
+        <div class="row-rule">1 pt per 10 contacts</div>
+        <div class="ratio-pip-wrap" id="pips-prospects"></div>
+      </div>
+      <div class="row-pts" id="pts-prospects">0 pts</div>
+      <div class="row-control">
+        <button onclick="adjust('prospects',-1)">−</button>
+        <div class="row-val" id="val-prospects">0</div>
+        <button onclick="adjust('prospects',1)">+</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-meta">
+        <div class="row-name">Conversations (correct contacts)</div>
+        <div class="row-rule">1 pt per conversation</div>
+      </div>
+      <div class="row-pts" id="pts-convos">0 pts</div>
+      <div class="row-control">
+        <button onclick="adjust('convos',-1)">−</button>
+        <div class="row-val" id="val-convos">0</div>
+        <button onclick="adjust('convos',1)">+</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-meta">
+        <div class="row-name">Value-based messages (Dir+)</div>
+        <div class="row-rule">1 pt per 5 sent</div>
+        <div class="ratio-pip-wrap" id="pips-messages"></div>
+      </div>
+      <div class="row-pts" id="pts-messages">0 pts</div>
+      <div class="row-control">
+        <button onclick="adjust('messages',-1)">−</button>
+        <div class="row-val" id="val-messages">0</div>
+        <button onclick="adjust('messages',1)">+</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PIPELINE HEALTH -->
+  <div class="section-head">
+    <div class="section-dot" style="background:var(--health)"></div>
+    <div class="section-title">Pipeline health</div>
+  </div>
+  <div class="rows">
+
+    <div class="row">
+      <div class="row-meta">
+        <div class="row-name">Initial qualifying meetings set</div>
+        <div class="row-rule">1 pt per meeting</div>
+      </div>
+      <div class="row-pts" id="pts-meetings">0 pts</div>
+      <div class="row-control">
+        <button onclick="adjust('meetings',-1)">−</button>
+        <div class="row-val" id="val-meetings">0</div>
+        <button onclick="adjust('meetings',1)">+</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-meta">
+        <div class="row-name">Opportunities created</div>
+        <div class="row-rule">1 pt per opportunity</div>
+      </div>
+      <div class="row-pts" id="pts-opps">0 pts</div>
+      <div class="row-control">
+        <button onclick="adjust('opps',-1)">−</button>
+        <div class="row-val" id="val-opps">0</div>
+        <button onclick="adjust('opps',1)">+</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PERSONAL DEV -->
+  <div class="section-head">
+    <div class="section-dot" style="background:var(--dev)"></div>
+    <div class="section-title">Personal development</div>
+  </div>
+  <div class="rows">
+    <div class="toggle-row">
+      <div class="row-meta">
+        <div class="row-name">1 hr deep learning completed</div>
+        <div class="row-rule">product · personas · territory — 1 pt max</div>
+      </div>
+      <div class="row-pts" id="pts-dev">0 pts</div>
+      <label class="switch">
+        <input type="checkbox" id="val-dev" onchange="recalc()">
+        <span class="switch-track"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- WEEK -->
+  <div class="section-head" style="margin-top:44px">
+    <div class="section-dot" style="background:var(--text3)"></div>
+    <div class="section-title">This week</div>
+  </div>
+  <div class="week-grid" id="week-grid"></div>
+  <div class="week-summary">
+    <div class="week-summary-label">Weekly average</div>
+    <div class="week-summary-val" id="week-avg-val">—</div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
+let store = {};
+let offset = 0;
+
+function dateKey(off) {
+  const d = new Date();
+  d.setDate(d.getDate() + (off ?? offset));
+  return d.toISOString().split('T')[0];
+}
+
+function todayKey() { return dateKey(0); }
+
+function weekKeys() {
+  const today = new Date();
+  const dow = today.getDay();
+  const diff = dow === 0 ? -6 : 1 - dow;
+  return Array.from({length:5}, (_,i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() + diff + i);
+    return d.toISOString().split('T')[0];
+  });
+}
+
+function formatDateLabel(off) {
+  if (off === 0) return 'Today';
+  if (off === -1) return 'Yesterday';
+  if (off === 1) return 'Tomorrow';
+  const d = new Date();
+  d.setDate(d.getDate() + off);
+  return d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'});
+}
+
+function load() {
+  try { store = JSON.parse(localStorage.getItem('daily-scorer-v2') || '{}'); } catch(e) { store = {}; }
+}
+
+function save() {
+  localStorage.setItem('daily-scorer-v2', JSON.stringify(store));
+}
+
+function dayData(key) {
+  return store[key] || {prospects:0, convos:0, messages:0, meetings:0, opps:0, dev:false};
+}
+
+function score(d) {
+  const prospects = Math.floor(d.prospects / 10);
+  const convos    = d.convos;
+  const messages  = Math.floor(d.messages / 5);
+  const meetings  = d.meetings;
+  const opps      = d.opps;
+  const dev       = d.dev ? 1 : 0;
+  return {
+    prospects, convos, messages, meetings, opps, dev,
+    gen:    prospects + convos + messages,
+    health: meetings + opps,
+    total:  prospects + convos + messages + meetings + opps + dev
+  };
+}
+
+function scoreColor(n) {
+  if (n >= 8) return 'var(--accent)';
+  if (n >= 5) return 'var(--warn)';
+  if (n > 0)  return 'var(--danger)';
+  return 'var(--text3)';
+}
+
+function pctBar(n) { return Math.min(100, (n/8)*100).toFixed(1); }
+
+function buildPips(container, current, total) {
+  const el = document.getElementById(container);
+  if (!el) return;
+  let html = '';
+  for (let i = 0; i < total; i++) {
+    html += `<div class="ratio-pip${i < current ? ' filled' : ''}"></div>`;
+  }
+  el.innerHTML = html;
+}
+
+function adjust(field, delta) {
+  const key = dateKey();
+  if (!store[key]) store[key] = dayData(key);
+  store[key][field] = Math.max(0, (store[key][field] || 0) + delta);
+  save();
+  render();
+}
+
+function recalc() {
+  const key = dateKey();
+  if (!store[key]) store[key] = dayData(key);
+  store[key].dev = document.getElementById('val-dev').checked;
+  save();
+  render();
+}
+
+function loadFields() {
+  const d = dayData(dateKey());
+  document.getElementById('val-prospects').textContent = d.prospects;
+  document.getElementById('val-convos').textContent    = d.convos;
+  document.getElementById('val-messages').textContent  = d.messages;
+  document.getElementById('val-meetings').textContent  = d.meetings;
+  document.getElementById('val-opps').textContent      = d.opps;
+  document.getElementById('val-dev').checked           = d.dev;
+}
+
+function render() {
+  const key = dateKey();
+  const d   = dayData(key);
+  const s   = score(d);
+
+  // fields
+  document.getElementById('val-prospects').textContent = d.prospects;
+  document.getElementById('val-convos').textContent    = d.convos;
+  document.getElementById('val-messages').textContent  = d.messages;
+  document.getElementById('val-meetings').textContent  = d.meetings;
+  document.getElementById('val-opps').textContent      = d.opps;
+  document.getElementById('val-dev').checked           = d.dev;
+
+  // pips for ratio fields
+  buildPips('pips-prospects', d.prospects % 10, 10);
+  buildPips('pips-messages',  d.messages  % 5,  5);
+
+  // pts labels
+  function ptsLabel(n) { return n + ' pt' + (n !== 1 ? 's' : ''); }
+  function setPts(id, n) {
+    const el = document.getElementById(id);
+    el.textContent = ptsLabel(n);
+    el.className = 'row-pts' + (n > 0 ? ' earned' : '');
+  }
+  setPts('pts-prospects', s.prospects);
+  setPts('pts-convos',    s.convos);
+  setPts('pts-messages',  s.messages);
+  setPts('pts-meetings',  s.meetings);
+  setPts('pts-opps',      s.opps);
+  setPts('pts-dev',       s.dev);
+
+  // pillars
+  document.getElementById('pillar-gen').textContent    = s.gen;
+  document.getElementById('pillar-health').textContent = s.health;
+  document.getElementById('pillar-dev').textContent    = s.dev;
+
+  // hero score
+  const heroScore = document.getElementById('hero-score');
+  heroScore.textContent = s.total;
+  heroScore.style.color = scoreColor(s.total);
+
+  const remaining = Math.max(0, 8 - s.total);
+  document.getElementById('hero-target').textContent =
+    s.total >= 8 ? '✓ quota pace reached' : remaining + ' pts to quota pace';
+
+  // progress
+  const fill = document.getElementById('progress-fill');
+  fill.style.width = pctBar(s.total) + '%';
+  fill.style.background = scoreColor(s.total);
+
+  // status
+  const statusEl = document.getElementById('hero-status');
+  if (s.total >= 8)      { statusEl.textContent = 'On track'; statusEl.style.color = 'var(--accent)'; }
+  else if (s.total >= 5) { statusEl.textContent = 'Building'; statusEl.style.color = 'var(--warn)'; }
+  else if (s.total > 0)  { statusEl.textContent = 'Off pace';  statusEl.style.color = 'var(--danger)'; }
+  else                   { statusEl.textContent = 'Not started'; statusEl.style.color = 'var(--text3)'; }
+
+  // topbar
+  document.getElementById('topbar-date').textContent = formatDateLabel(offset);
+  const topStatus = document.getElementById('topbar-status');
+  topStatus.textContent = s.total >= 8 ? '8 / 8' : s.total + ' / 8';
+  topStatus.style.color = scoreColor(s.total);
+
+  // week
+  renderWeek(key);
+}
+
+function renderWeek(currentKey) {
+  const keys = weekKeys();
+  const tKey = todayKey();
+  let grid = '';
+  let scored = [];
+
+  keys.forEach((k, i) => {
+    const d  = dayData(k);
+    const s  = score(d);
+    const isToday   = k === tKey;
+    const isCurrent = k === currentKey;
+    const col = s.total > 0 || isToday ? scoreColor(s.total) : 'var(--text3)';
+    const disp = s.total > 0 || isToday ? s.total : '—';
+    const barW = pctBar(s.total);
+
+    if (s.total > 0 || isToday) scored.push(s.total);
+
+    grid += `<div class="week-cell${isToday?' is-today':''}${isCurrent&&!isToday?' is-current':''}">
+      <div class="week-cell-day">${DAYS[i]}</div>
+      <div class="week-cell-score" style="color:${col}">${disp}</div>
+      <div class="week-cell-bar"><div class="week-cell-bar-fill" style="width:${barW}%;background:${col}"></div></div>
+    </div>`;
+  });
+
+  document.getElementById('week-grid').innerHTML = grid;
+
+  const avgEl = document.getElementById('hero-avg');
+  const wkEl  = document.getElementById('week-avg-val');
+  if (scored.length) {
+    const avg = (scored.reduce((a,b)=>a+b,0) / scored.length).toFixed(1);
+    avgEl.textContent = avg;
+    avgEl.style.color = scoreColor(parseFloat(avg));
+    wkEl.textContent  = avg + ' pts / day';
+    wkEl.style.color  = scoreColor(parseFloat(avg));
+  } else {
+    avgEl.textContent = '—'; avgEl.style.color = 'var(--text2)';
+    wkEl.textContent  = '—'; wkEl.style.color  = 'var(--text2)';
+  }
+}
+
+function changeDay(dir) {
+  offset += dir;
+  render();
+}
+
+load();
+render();
+</script>
+</body>
+</html>
