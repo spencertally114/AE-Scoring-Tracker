@@ -3,648 +3,1078 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Scorer — Spencer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Daily Scorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0c0c0c;
-  --bg2: #131313;
-  --bg3: #1a1a1a;
-  --bg4: #222;
-  --border: rgba(255,255,255,0.06);
-  --border2: rgba(255,255,255,0.11);
-  --text: #edeae4;
-  --text2: #7a7870;
-  --text3: #3f3e3a;
-  --accent: #c9f060;
-  --accent-dim: rgba(201,240,96,0.10);
-  --warn: #f0a832;
-  --warn-dim: rgba(240,168,50,0.10);
-  --danger: #f05252;
-  --danger-dim: rgba(240,82,82,0.09);
-  --gen: #52b8f0;
-  --health: #b852f0;
-  --dev: #f0c852;
-  --r: 10px;
-  --rlg: 16px;
+  --bg:      #f0ebe1;
+  --bg2:     #e8e1d4;
+  --bg3:     #ddd5c4;
+  --panel:   rgba(255,252,245,0.88);
+  --panel2:  rgba(248,244,236,0.95);
+  --border:  rgba(80,60,30,0.12);
+  --border2: rgba(80,60,30,0.22);
+  --ink:     #1c1610;
+  --ink2:    #3a2e1e;
+  --ink3:    #6b5030;
+  --ink4:    #9a7848;
+  --ink5:    #c4a472;
+  --orange:  #c8520a;
+  --orange2: rgba(200,82,10,0.12);
+  --orange3: rgba(200,82,10,0.06);
+  --green:   #2d6a3f;
+  --green2:  rgba(45,106,63,0.12);
+  --teal:    #1a6a5a;
+  --warn:    #b87820;
+  --danger:  #b83030;
+  --text:    #1c1610;
+  --text2:   #6b5030;
+  --text3:   #a88858;
+  --r:       8px;
+  --rlg:     12px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html, body { min-height: 100vh; }
+
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Syne', sans-serif;
-  min-height: 100vh;
-  padding: 0 0 80px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
 }
 
-/* ── TOP BAR ── */
-.topbar {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(12,12,12,0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  padding: 0 40px;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 56px;
-}
-.topbar-brand {
-  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--text3); font-weight: 500;
-}
-.topbar-nav { display: flex; align-items: center; gap: 8px; }
-.topbar-nav button {
-  background: none; border: 1px solid var(--border); border-radius: 8px;
-  color: var(--text2); font-family: 'DM Mono', monospace; font-size: 12px;
-  padding: 5px 10px; cursor: pointer; transition: all 0.15s;
-}
-.topbar-nav button:hover { border-color: var(--border2); color: var(--text); }
-.topbar-date {
-  font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text2);
-  min-width: 130px; text-align: center;
-}
-
-/* ── MAIN LAYOUT ── */
-.app { max-width: 780px; margin: 0 auto; padding: 40px 32px 0; }
-
-/* ── HERO SCORE ── */
-.hero {
-  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
-  margin-bottom: 36px;
-}
-.hero-main {
-  grid-column: 1 / 2;
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--rlg); padding: 24px;
-  display: flex; flex-direction: column; justify-content: space-between;
-  min-height: 130px;
-}
-.hero-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
-.hero-score { font-size: 64px; font-weight: 800; line-height: 1; letter-spacing: -0.04em; transition: color 0.3s; }
-.hero-target { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); }
-
-.hero-stat {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--rlg); padding: 20px 22px;
-  display: flex; flex-direction: column; justify-content: space-between;
-}
-.hero-stat-val { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-top: 8px; }
-
-/* progress bar */
-.progress-wrap { margin-bottom: 36px; }
-.progress-track {
-  height: 3px; background: var(--bg3); border-radius: 2px; overflow: visible;
+/* ── HERO ILLUSTRATION BANNER ── */
+.hero-banner {
+  width: 100%;
+  background: linear-gradient(180deg, #d4e8f4 0%, #b8d4e8 20%, #c8d8c0 55%, #b0c4a0 75%, #8aaa80 100%);
   position: relative;
-}
-.progress-fill {
-  height: 100%; border-radius: 2px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1), background 0.3s;
-  position: relative;
-}
-.progress-fill::after {
-  content: ''; position: absolute; right: -1px; top: -3px;
-  width: 9px; height: 9px; border-radius: 50%;
-  background: inherit; transition: background 0.3s;
-}
-.progress-ticks {
-  display: flex; justify-content: space-between;
-  margin-top: 6px; font-family: 'DM Mono', monospace;
-  font-size: 10px; color: var(--text3);
+  overflow: hidden;
+  height: 320px;
+  flex-shrink: 0;
 }
 
-/* ── PILLARS ── */
-.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 32px; }
-.pillar {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 14px 16px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.pillar-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); }
-.pillar-val { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500; }
-
-/* ── SECTION HEADERS ── */
-.section-head {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 10px; margin-top: 28px;
-}
-.section-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.section-title { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); font-weight: 500; }
-
-/* ── INPUT ROWS ── */
-.rows { display: flex; flex-direction: column; gap: 6px; }
-.row {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 14px 18px;
-  display: grid; grid-template-columns: 1fr auto auto;
-  align-items: center; gap: 16px;
-  transition: border-color 0.15s;
-}
-.row:hover { border-color: var(--border2); }
-.row-meta { display: flex; flex-direction: column; gap: 3px; }
-.row-name { font-size: 14px; font-weight: 500; color: var(--text); }
-.row-rule { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); }
-.row-pts {
-  font-family: 'DM Mono', monospace; font-size: 12px;
-  color: var(--text3); min-width: 44px; text-align: right;
-  transition: color 0.2s;
-}
-.row-pts.earned { color: var(--accent); }
-.row-control { display: flex; align-items: center; gap: 8px; }
-.row-control button {
-  width: 30px; height: 30px; border-radius: 8px;
-  border: 1px solid var(--border); background: var(--bg3);
-  color: var(--text2); font-size: 16px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.12s; line-height: 1; font-family: 'DM Mono', monospace;
-}
-.row-control button:hover { border-color: var(--border2); color: var(--text); background: var(--bg4); }
-.row-control button:active { transform: scale(0.94); }
-.row-val {
-  font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500;
-  min-width: 32px; text-align: center; color: var(--text);
+.hero-banner svg {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 100%;
 }
 
-/* micro progress for ratio metrics */
-.ratio-pip-wrap { display: flex; gap: 3px; margin-top: 5px; }
-.ratio-pip {
-  height: 2px; border-radius: 1px; background: var(--bg4); flex: 1;
-  transition: background 0.2s;
-}
-.ratio-pip.filled { background: var(--accent); }
-
-/* toggle row */
-.toggle-row {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 14px 18px;
-  display: grid; grid-template-columns: 1fr auto auto;
-  align-items: center; gap: 16px;
-  transition: border-color 0.15s;
-}
-.toggle-row:hover { border-color: var(--border2); }
-.switch { position: relative; width: 44px; height: 24px; cursor: pointer; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.switch-track {
+.banner-overlay {
   position: absolute; inset: 0;
-  background: var(--bg4); border: 1px solid var(--border2);
-  border-radius: 12px; transition: all 0.2s;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 60%,
+    rgba(240,235,225,0.5) 85%,
+    var(--bg) 100%
+  );
 }
-.switch-track::before {
-  content: ''; position: absolute;
-  width: 18px; height: 18px; border-radius: 50%;
-  top: 2px; left: 2px;
-  background: var(--text3); transition: all 0.2s;
-}
-.switch input:checked + .switch-track { background: var(--accent-dim); border-color: var(--accent); }
-.switch input:checked + .switch-track::before { transform: translateX(20px); background: var(--accent); }
 
-/* ── WEEK VIEW ── */
-.week-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
-.week-cell {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 14px 12px; text-align: center;
+/* ── SHELL ── */
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 300px; flex-shrink: 0;
+  background: var(--panel2);
+  border-right: 1px solid var(--border2);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.sidebar-header {
+  padding: 24px 22px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 900; color: var(--ink);
+  letter-spacing: -0.01em; margin-bottom: 2px;
+}
+.sidebar-brand span { color: var(--orange); font-style: italic; }
+.sidebar-sub { font-size: 10px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* date nav */
+.date-nav {
+  padding: 12px 22px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.date-btn {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 6px; color: var(--text2); font-size: 13px;
+  width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.14s;
+}
+.date-btn:hover { background: var(--bg3); border-color: var(--ink3); color: var(--ink); }
+.date-lbl { font-size: 12px; font-weight: 600; color: var(--ink2); }
+
+/* donut score */
+.donut-wrap {
+  padding: 22px 22px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center;
+}
+.donut-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; }
+.donut-container { position: relative; width: 130px; height: 130px; margin-bottom: 10px; }
+.donut-svg { width: 130px; height: 130px; transform: rotate(-90deg); }
+.donut-track { fill: none; stroke: var(--bg3); stroke-width: 10; }
+.donut-fill {
+  fill: none; stroke-width: 10; stroke-linecap: round;
+  stroke-dasharray: 314;
+  stroke-dashoffset: 314;
+  transition: stroke-dashoffset 0.6s cubic-bezier(.4,0,.2,1), stroke 0.3s;
+}
+.donut-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.donut-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 38px; font-weight: 900; line-height: 1;
+  transition: color 0.3s;
+  color: var(--ink);
+}
+.donut-den { font-size: 11px; color: var(--text3); margin-top: 1px; }
+.donut-status {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 14px; border-radius: 20px; transition: all 0.3s;
+  background: var(--bg2); color: var(--text3); border: 1px solid var(--border2);
+}
+
+/* pillars */
+.pillars {
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.pillar-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+}
+.pillar-row:last-child { border-bottom: none; }
+.pillar-left { display: flex; align-items: center; gap: 8px; }
+.pillar-dot { width: 6px; height: 6px; border-radius: 50%; }
+.pillar-lbl { font-size: 11px; color: var(--text2); }
+.pillar-val { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; }
+
+/* input rows */
+.sidebar-inputs { padding: 0 22px 20px; flex: 1; }
+.sec-label {
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text3); padding: 16px 0 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.inp-row {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.inp-row:last-child { border-bottom: none; }
+.inp-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 2px; }
+.inp-name { font-size: 12px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+.inp-pts { font-size: 11px; color: var(--text3); transition: color 0.2s; flex-shrink: 0; margin-left: 8px; }
+.inp-pts.on { color: var(--orange); font-weight: 600; }
+.inp-rule { font-size: 10px; color: var(--text3); margin-bottom: 6px; }
+.pip-row { display: flex; gap: 2px; margin-bottom: 6px; }
+.pip { flex: 1; height: 2px; border-radius: 1px; background: var(--bg3); transition: background 0.15s; }
+.pip.on { background: var(--orange); }
+.inp-ctrl { display: flex; align-items: center; gap: 6px; }
+.ctrl-btn {
+  width: 26px; height: 26px; border-radius: 6px;
+  border: 1px solid var(--border2); background: var(--bg);
+  color: var(--text2); font-size: 15px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s; line-height: 1;
+}
+.ctrl-btn:hover { background: var(--bg2); border-color: var(--orange); color: var(--orange); }
+.ctrl-btn:active { transform: scale(0.92); }
+.ctrl-val {
+  font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700;
+  min-width: 28px; text-align: center; color: var(--ink);
+}
+.toggle-row {
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.toggle-left { flex: 1; }
+.tog-name { font-size: 12px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.tog-rule { font-size: 10px; color: var(--text3); }
+.tog-pts { font-size: 11px; color: var(--text3); margin-right: 10px; transition: color 0.2s; }
+.tog-pts.on { color: var(--orange); font-weight: 600; }
+.switch { position: relative; width: 40px; height: 22px; cursor: pointer; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.sw-track {
+  position: absolute; inset: 0;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 11px; transition: all 0.22s;
+}
+.sw-track::before {
+  content: ''; position: absolute;
+  width: 14px; height: 14px; border-radius: 50%;
+  top: 3px; left: 3px; background: var(--text3); transition: all 0.22s;
+}
+.switch input:checked + .sw-track { background: var(--orange); border-color: var(--orange); }
+.switch input:checked + .sw-track::before { transform: translateX(18px); background: white; }
+
+/* ── MAIN ── */
+.main {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  display: flex; flex-direction: column;
+}
+.main::-webkit-scrollbar { width: 4px; }
+.main::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* content below banner */
+.main-content { padding: 24px 28px 60px; }
+
+.main-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.main-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 900; color: var(--ink);
+}
+.main-title span { color: var(--orange); font-style: italic; }
+.topbar-badge {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 20px;
+  border: 1px solid var(--border2); color: var(--text2);
+  background: var(--panel);
+  display: flex; align-items: center; gap: 6px;
+}
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
+
+/* stats cards */
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 14px; }
+.stat-card {
+  background: var(--panel); border: 1px solid var(--border2);
+  border-radius: var(--rlg); padding: 18px 20px;
+  backdrop-filter: blur(8px);
+}
+.sc-lbl { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+.sc-val { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 900; line-height: 1; transition: color 0.3s; }
+.sc-sub { font-size: 10px; color: var(--text3); margin-top: 4px; }
+.sc-bar-wrap { height: 3px; background: var(--bg2); border-radius: 2px; margin-top: 12px; overflow: hidden; }
+.sc-bar { height: 100%; border-radius: 2px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+
+/* progress */
+.prog-card {
+  background: var(--panel); border: 1px solid var(--border2);
+  border-radius: var(--rlg); padding: 16px 20px; margin-bottom: 14px;
+}
+.prog-head { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.prog-lbl { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); }
+.prog-num { font-size: 12px; font-weight: 600; color: var(--ink2); }
+.prog-track { height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
+.prog-fill { height: 100%; border-radius: 3px; transition: width 0.5s cubic-bezier(.4,0,.2,1), background 0.3s; }
+.prog-ticks { display: flex; justify-content: space-between; margin-top: 5px; font-size: 9px; color: var(--text3); }
+
+/* week */
+.week-card {
+  background: var(--panel); border: 1px solid var(--border2);
+  border-radius: var(--rlg); padding: 18px 20px; margin-bottom: 14px;
+}
+.wc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.wc-title { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); }
+.wc-avg { font-size: 12px; font-weight: 600; }
+.week-cells { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; }
+.wc {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 12px 8px; text-align: center;
   transition: border-color 0.2s;
 }
-.week-cell.is-today { border-color: rgba(201,240,96,0.3); background: rgba(201,240,96,0.04); }
-.week-cell.is-current { border-color: var(--border2); }
-.week-cell-day { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
-.week-cell-score { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; }
-.week-cell-bar { height: 2px; border-radius: 1px; margin-top: 8px; background: var(--bg4); overflow: hidden; }
-.week-cell-bar-fill { height: 100%; border-radius: 1px; transition: width 0.3s; }
-.week-summary {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-top: 14px; padding: 14px 18px;
-  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r);
-}
-.week-summary-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); }
-.week-summary-val { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; }
+.wc.today { border-color: var(--orange); background: var(--orange3); }
+.wc.current { border-color: var(--border2); }
+.wc-day { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+.wc-score { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+.wc-bar { height: 2px; background: var(--bg2); margin-top: 8px; border-radius: 1px; overflow: hidden; }
+.wc-fill { height: 100%; border-radius: 1px; transition: width 0.4s; }
 
-/* ── ANIMATIONS ── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* bottom row */
+.bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.info-card {
+  background: var(--panel); border: 1px solid var(--border2);
+  border-radius: var(--rlg); padding: 18px 20px;
 }
-.app > * { animation: fadeUp 0.35s ease both; }
-.app > *:nth-child(1) { animation-delay: 0.05s; }
-.app > *:nth-child(2) { animation-delay: 0.10s; }
-.app > *:nth-child(3) { animation-delay: 0.15s; }
-.app > *:nth-child(4) { animation-delay: 0.20s; }
-.app > *:nth-child(5) { animation-delay: 0.25s; }
+.ic-title { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; }
+.ic-row {
+  display: flex; align-items: center;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+}
+.ic-row:last-child { border-bottom: none; }
+.ic-name { font-size: 11px; color: var(--text2); width: 110px; flex-shrink: 0; }
+.ic-bar-wrap { flex: 1; height: 3px; background: var(--bg2); border-radius: 2px; overflow: hidden; margin: 0 10px; }
+.ic-bar { height: 100%; border-radius: 2px; transition: width 0.4s; }
+.ic-val { font-size: 12px; font-weight: 700; font-family: 'Playfair Display', serif; min-width: 20px; text-align: right; }
+.fw-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0; border-bottom: 1px solid var(--border);
+}
+.fw-row:last-child { border-bottom: none; }
+.fw-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.fw-rule { font-size: 11px; color: var(--text2); flex: 1; }
+.fw-pts { font-size: 10px; color: var(--text3); white-space: nowrap; }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 600px) {
-  .app { padding: 24px 16px 0; }
-  .topbar { padding: 0 16px; }
-  .hero { grid-template-columns: 1fr 1fr; }
-  .hero-main { grid-column: 1 / -1; }
-  .pillars { grid-template-columns: 1fr; }
-  .week-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; }
-  .week-cell { padding: 10px 6px; }
-  .week-cell-score { font-size: 15px; }
+@media (max-width: 900px) {
+  .shell { flex-direction: column; }
+  .sidebar { width: 100%; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .bottom-row { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-brand">Daily Scorer</div>
-  <div class="topbar-nav">
-    <button onclick="changeDay(-1)">&#8592;</button>
-    <div class="topbar-date" id="topbar-date"></div>
-    <button onclick="changeDay(1)">&#8594;</button>
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">AE <span>Field Log</span></div>
+      <div class="sidebar-sub">Kyle Asay Framework · v1.0</div>
+    </div>
+
+    <div class="date-nav">
+      <button class="date-btn" onclick="changeDay(-1)">←</button>
+      <div class="date-lbl" id="date-lbl">Today</div>
+      <button class="date-btn" onclick="changeDay(1)">→</button>
+    </div>
+
+    <div class="donut-wrap">
+      <div class="donut-label">Daily Score</div>
+      <div class="donut-container">
+        <svg class="donut-svg" viewBox="0 0 120 120">
+          <circle class="donut-track" cx="60" cy="60" r="50"/>
+          <circle class="donut-fill" id="donut-fill" cx="60" cy="60" r="50" stroke="var(--orange)"/>
+        </svg>
+        <div class="donut-center">
+          <div class="donut-num" id="donut-num">0</div>
+          <div class="donut-den">/ 8 pts</div>
+        </div>
+      </div>
+      <div class="donut-status" id="donut-status">Standby</div>
+    </div>
+
+    <div class="pillars">
+      <div class="pillar-row">
+        <div class="pillar-left"><div class="pillar-dot" style="background:var(--orange)"></div><div class="pillar-lbl">Pipeline gen</div></div>
+        <div class="pillar-val" id="pv-gen" style="color:var(--orange)">0</div>
+      </div>
+      <div class="pillar-row">
+        <div class="pillar-left"><div class="pillar-dot" style="background:var(--teal)"></div><div class="pillar-lbl">Pipeline health</div></div>
+        <div class="pillar-val" id="pv-health" style="color:var(--teal)">0</div>
+      </div>
+      <div class="pillar-row">
+        <div class="pillar-left"><div class="pillar-dot" style="background:var(--warn)"></div><div class="pillar-lbl">Personal dev</div></div>
+        <div class="pillar-val" id="pv-dev" style="color:var(--warn)">0</div>
+      </div>
+    </div>
+
+    <div class="sidebar-inputs">
+      <div class="sec-label">Pipeline Generation</div>
+
+      <div class="inp-row">
+        <div class="inp-top"><div class="inp-name">Prospects to cadence</div><div class="inp-pts" id="pts-prospects">0 pts</div></div>
+        <div class="inp-rule">1 pt per 10 contacts</div>
+        <div class="pip-row" id="pips-prospects"></div>
+        <div class="inp-ctrl">
+          <button class="ctrl-btn" onclick="adjust('prospects',-1)">−</button>
+          <div class="ctrl-val" id="val-prospects">0</div>
+          <button class="ctrl-btn" onclick="adjust('prospects',1)">+</button>
+        </div>
+      </div>
+
+      <div class="inp-row">
+        <div class="inp-top"><div class="inp-name">Conversations</div><div class="inp-pts" id="pts-convos">0 pts</div></div>
+        <div class="inp-rule">1 pt per conversation</div>
+        <div class="inp-ctrl" style="margin-top:6px">
+          <button class="ctrl-btn" onclick="adjust('convos',-1)">−</button>
+          <div class="ctrl-val" id="val-convos">0</div>
+          <button class="ctrl-btn" onclick="adjust('convos',1)">+</button>
+        </div>
+      </div>
+
+      <div class="inp-row">
+        <div class="inp-top"><div class="inp-name">Value messages (Dir+)</div><div class="inp-pts" id="pts-messages">0 pts</div></div>
+        <div class="inp-rule">1 pt per 5 sent</div>
+        <div class="pip-row" id="pips-messages"></div>
+        <div class="inp-ctrl">
+          <button class="ctrl-btn" onclick="adjust('messages',-1)">−</button>
+          <div class="ctrl-val" id="val-messages">0</div>
+          <button class="ctrl-btn" onclick="adjust('messages',1)">+</button>
+        </div>
+      </div>
+
+      <div class="sec-label">Pipeline Health</div>
+
+      <div class="inp-row">
+        <div class="inp-top"><div class="inp-name">Qualifying meetings set</div><div class="inp-pts" id="pts-meetings">0 pts</div></div>
+        <div class="inp-rule">1 pt per meeting</div>
+        <div class="inp-ctrl" style="margin-top:6px">
+          <button class="ctrl-btn" onclick="adjust('meetings',-1)">−</button>
+          <div class="ctrl-val" id="val-meetings">0</div>
+          <button class="ctrl-btn" onclick="adjust('meetings',1)">+</button>
+        </div>
+      </div>
+
+      <div class="inp-row">
+        <div class="inp-top"><div class="inp-name">Opportunities created</div><div class="inp-pts" id="pts-opps">0 pts</div></div>
+        <div class="inp-rule">1 pt per opportunity</div>
+        <div class="inp-ctrl" style="margin-top:6px">
+          <button class="ctrl-btn" onclick="adjust('opps',-1)">−</button>
+          <div class="ctrl-val" id="val-opps">0</div>
+          <button class="ctrl-btn" onclick="adjust('opps',1)">+</button>
+        </div>
+      </div>
+
+      <div class="sec-label">Personal Dev</div>
+
+      <div class="toggle-row">
+        <div class="toggle-left">
+          <div class="tog-name">1 hr deep learning</div>
+          <div class="tog-rule">Product · Personas · Territory</div>
+        </div>
+        <div class="tog-pts" id="pts-dev">0 pts</div>
+        <label class="switch">
+          <input type="checkbox" id="val-dev" onchange="recalc()">
+          <span class="sw-track"></span>
+        </label>
+      </div>
+    </div>
   </div>
-  <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)" id="topbar-status"></div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- HERO ILLUSTRATION BANNER -->
+    <div class="hero-banner">
+      <svg viewBox="0 0 1200 320" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#a8cce0"/>
+            <stop offset="40%" stop-color="#c4dcea"/>
+            <stop offset="100%" stop-color="#daeaf0"/>
+          </linearGradient>
+          <linearGradient id="mtn1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#8ca8b8"/>
+            <stop offset="50%" stop-color="#7a9aac"/>
+            <stop offset="100%" stop-color="#6a8898"/>
+          </linearGradient>
+          <linearGradient id="mtn2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#6a8898"/>
+            <stop offset="100%" stop-color="#507080"/>
+          </linearGradient>
+          <linearGradient id="mtn3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4a6878"/>
+            <stop offset="100%" stop-color="#385868"/>
+          </linearGradient>
+          <linearGradient id="snowcap" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f0f4f8"/>
+            <stop offset="100%" stop-color="#d8e4ec"/>
+          </linearGradient>
+          <linearGradient id="mtnface" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#c8a870" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#c8a870" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#8aaa6a"/>
+            <stop offset="100%" stop-color="#6a8a50"/>
+          </linearGradient>
+          <linearGradient id="dirt" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c4a870"/>
+            <stop offset="100%" stop-color="#a88858"/>
+          </linearGradient>
+          <linearGradient id="track" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#b09060"/>
+            <stop offset="100%" stop-color="#907040"/>
+          </linearGradient>
+          <radialGradient id="sun" cx="75%" cy="12%" r="15%">
+            <stop offset="0%" stop-color="#fff8e0" stop-opacity="0.9"/>
+            <stop offset="30%" stop-color="#ffe8a0" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#ffd060" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="sunhalo" cx="75%" cy="12%" r="30%">
+            <stop offset="0%" stop-color="#fff4c0" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#fff4c0" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="softblur">
+            <feGaussianBlur stdDeviation="1.5"/>
+          </filter>
+          <filter id="mtnblur">
+            <feGaussianBlur stdDeviation="0.8"/>
+          </filter>
+        </defs>
+
+        <!-- SKY -->
+        <rect width="1200" height="320" fill="url(#sky)"/>
+
+        <!-- SUN HALO & SUN -->
+        <ellipse cx="900" cy="38" rx="180" ry="100" fill="url(#sunhalo)"/>
+        <circle cx="900" cy="38" r="28" fill="url(#sun)"/>
+        <circle cx="900" cy="38" r="16" fill="#fff8d0" opacity="0.95"/>
+
+        <!-- CLOUDS -->
+        <g fill="white" opacity="0.7">
+          <ellipse cx="200" cy="50" rx="80" ry="22"/>
+          <ellipse cx="160" cy="52" rx="50" ry="18"/>
+          <ellipse cx="240" cy="48" rx="55" ry="16"/>
+          <ellipse cx="490" cy="38" rx="70" ry="18"/>
+          <ellipse cx="450" cy="40" rx="45" ry="15"/>
+          <ellipse cx="525" cy="36" rx="48" ry="14"/>
+          <ellipse cx="1050" cy="60" rx="60" ry="16"/>
+          <ellipse cx="1020" cy="62" rx="38" ry="13"/>
+          <ellipse cx="1080" cy="58" rx="42" ry="12"/>
+        </g>
+        <g fill="white" opacity="0.5">
+          <ellipse cx="700" cy="28" rx="50" ry="12"/>
+          <ellipse cx="680" cy="30" rx="32" ry="10"/>
+          <ellipse cx="350" cy="60" rx="40" ry="11"/>
+        </g>
+
+        <!-- FAR MOUNTAINS (bluest, most distant) -->
+        <g filter="url(#mtnblur)" opacity="0.6">
+          <path d="M0,180 L60,120 L120,150 L180,100 L240,130 L300,80 L360,120 L420,70 L480,110 L540,60 L600,100 L660,55 L720,95 L780,50 L840,90 L900,45 L960,85 L1020,50 L1080,80 L1140,55 L1200,75 L1200,320 L0,320 Z"
+            fill="#b8ccd8"/>
+        </g>
+
+        <!-- SNOW on far peaks -->
+        <g opacity="0.7" filter="url(#softblur)">
+          <path d="M540,60 L555,80 L525,80 Z" fill="url(#snowcap)"/>
+          <path d="M660,55 L678,78 L642,77 Z" fill="url(#snowcap)"/>
+          <path d="M780,50 L800,76 L760,75 Z" fill="url(#snowcap)"/>
+          <path d="M900,45 L922,72 L878,71 Z" fill="url(#snowcap)"/>
+          <path d="M1020,50 L1040,74 L1000,73 Z" fill="url(#snowcap)"/>
+          <path d="M420,70 L436,90 L404,89 Z" fill="url(#snowcap)"/>
+          <path d="M300,80 L316,98 L284,97 Z" fill="url(#snowcap)"/>
+        </g>
+
+        <!-- MID MOUNTAINS -->
+        <path d="M0,210 L50,155 L110,180 L170,135 L240,165 L310,110 L380,150 L450,95 L520,140 L590,85 L660,130 L730,80 L800,125 L870,75 L940,120 L1010,90 L1080,130 L1140,105 L1200,135 L1200,320 L0,320 Z"
+          fill="url(#mtn1)" opacity="0.85"/>
+
+        <!-- Snow mid -->
+        <g opacity="0.85">
+          <path d="M590,85 L610,112 L570,111 Z" fill="url(#snowcap)"/>
+          <path d="M730,80 L752,110 L708,109 Z" fill="url(#snowcap)"/>
+          <path d="M870,75 L895,108 L845,107 Z" fill="url(#snowcap)"/>
+          <path d="M450,95 L470,120 L430,119 Z" fill="url(#snowcap)"/>
+          <path d="M1010,90 L1028,112 L992,111 Z" fill="url(#snowcap)"/>
+        </g>
+        <!-- Mid shadow faces -->
+        <path d="M730,80 L800,125 L752,110 Z" fill="#5a7888" opacity="0.3"/>
+        <path d="M870,75 L940,120 L895,108 Z" fill="#5a7888" opacity="0.3"/>
+        <path d="M590,85 L660,130 L610,112 Z" fill="#5a7888" opacity="0.25"/>
+
+        <!-- MAIN FOREGROUND MOUNTAINS -->
+        <path d="M0,240 L80,180 L160,215 L240,165 L330,200 L420,145 L510,185 L600,130 L690,170 L780,120 L870,160 L960,115 L1050,155 L1130,130 L1200,160 L1200,320 L0,320 Z"
+          fill="url(#mtn2)"/>
+
+        <!-- Snow main peaks -->
+        <g opacity="0.92">
+          <path d="M600,130 L626,162 L574,161 Z" fill="url(#snowcap)"/>
+          <path d="M780,120 L808,155 L752,154 Z" fill="url(#snowcap)"/>
+          <path d="M960,115 L990,152 L930,151 Z" fill="url(#snowcap)"/>
+          <path d="M420,145 L444,172 L396,171 Z" fill="url(#snowcap)"/>
+        </g>
+        <!-- Sunlit face warmth on main peaks -->
+        <path d="M780,120 L870,160 L808,155 Z" fill="url(#mtnface)"/>
+        <path d="M960,115 L1050,155 L990,152 Z" fill="url(#mtnface)"/>
+        <path d="M600,130 L690,170 L626,162 Z" fill="url(#mtnface)"/>
+        <!-- Shadow faces -->
+        <path d="M780,120 L690,170 L752,154 Z" fill="#304858" opacity="0.25"/>
+        <path d="M960,115 L870,160 L930,151 Z" fill="#304858" opacity="0.22"/>
+        <path d="M600,130 L510,185 L574,161 Z" fill="#304858" opacity="0.2"/>
+
+        <!-- NEAR MOUNTAINS / RIDGELINE -->
+        <path d="M0,265 L100,220 L200,250 L300,210 L400,240 L500,200 L600,230 L700,205 L800,235 L900,210 L1000,240 L1100,215 L1200,240 L1200,320 L0,320 Z"
+          fill="url(#mtn3)"/>
+
+        <!-- FOREGROUND VEGETATION BAND -->
+        <path d="M0,280 Q150,265 300,278 Q450,290 600,272 Q750,255 900,270 Q1050,285 1200,268 L1200,320 L0,320 Z"
+          fill="url(#grass)"/>
+
+        <!-- TREES left cluster -->
+        <g fill="#2a4a30">
+          <polygon points="30,278 42,238 54,278"/>
+          <polygon points="44,278 58,234 72,278"/>
+          <polygon points="58,278 74,240 90,278"/>
+          <polygon points="72,278 88,242 104,278"/>
+          <polygon points="20,278 30,248 40,278" opacity="0.7"/>
+          <polygon points="88,278 100,244 112,278" opacity="0.8"/>
+          <!-- second layer -->
+          <polygon points="36,278 46,244 56,278" fill="#1e3820" opacity="0.6"/>
+          <polygon points="62,278 74,246 86,278" fill="#1e3820" opacity="0.6"/>
+        </g>
+        <!-- trunks left -->
+        <g fill="#2a1a0a" opacity="0.8">
+          <rect x="40" y="275" width="4" height="8"/>
+          <rect x="56" y="275" width="4" height="8"/>
+          <rect x="72" y="275" width="4" height="8"/>
+          <rect x="88" y="275" width="4" height="8"/>
+        </g>
+
+        <!-- TREES right cluster -->
+        <g fill="#2a4a30">
+          <polygon points="1090,275 1104,232 1118,275"/>
+          <polygon points="1106,275 1122,228 1138,275"/>
+          <polygon points="1122,275 1140,234 1158,275"/>
+          <polygon points="1138,275 1158,230 1178,275"/>
+          <polygon points="1155,275 1174,236 1193,275"/>
+          <polygon points="1080,275 1092,240 1104,275" opacity="0.8"/>
+          <polygon points="1170,275 1184,238 1198,275" opacity="0.8"/>
+          <!-- second layer -->
+          <polygon points="1098,275 1110,238 1122,275" fill="#1e3820" opacity="0.6"/>
+          <polygon points="1130,275 1144,234 1158,275" fill="#1e3820" opacity="0.6"/>
+        </g>
+        <g fill="#2a1a0a" opacity="0.8">
+          <rect x="1102" y="272" width="4" height="8"/>
+          <rect x="1120" y="272" width="4" height="8"/>
+          <rect x="1138" y="272" width="4" height="8"/>
+          <rect x="1156" y="272" width="4" height="8"/>
+          <rect x="1174" y="272" width="4" height="8"/>
+        </g>
+
+        <!-- DIRT TRACK / ROAD -->
+        <path d="M200,320 Q380,295 500,285 Q580,280 650,285 Q720,290 800,300 Q900,312 1000,320"
+          fill="none" stroke="#b09060" stroke-width="18" stroke-linecap="round"/>
+        <path d="M200,320 Q380,295 500,285 Q580,280 650,285 Q720,290 800,300 Q900,312 1000,320"
+          fill="none" stroke="#c8a870" stroke-width="10" stroke-linecap="round" opacity="0.6"/>
+        <!-- Track ruts -->
+        <path d="M220,320 Q390,298 506,288 Q582,283 650,287"
+          fill="none" stroke="#907040" stroke-width="2" opacity="0.5"/>
+        <path d="M230,320 Q395,300 510,290 Q584,285 652,289"
+          fill="none" stroke="#907040" stroke-width="2" opacity="0.5"/>
+
+        <!-- DUST TRAIL behind Defender -->
+        <ellipse cx="320" cy="302" rx="55" ry="10" fill="#d4b880" opacity="0.35" filter="url(#softblur)"/>
+        <ellipse cx="280" cy="305" rx="38" ry="7" fill="#d4b880" opacity="0.2" filter="url(#softblur)"/>
+        <ellipse cx="248" cy="308" rx="24" ry="5" fill="#d4b880" opacity="0.12" filter="url(#softblur)"/>
+
+        <!-- ═══════════════════════════════ -->
+        <!-- LAND ROVER DEFENDER 110        -->
+        <!-- positioned center-left on road -->
+        <!-- ═══════════════════════════════ -->
+        <g transform="translate(330, 248)">
+
+          <!-- Shadow under vehicle -->
+          <ellipse cx="120" cy="66" rx="108" ry="8" fill="#2a1a0a" opacity="0.25"/>
+
+          <!-- WHEELS BACK (behind body) -->
+          <!-- Rear wheel -->
+          <circle cx="175" cy="58" r="24" fill="#1a1208"/>
+          <circle cx="175" cy="58" r="22" fill="#252015"/>
+          <circle cx="175" cy="58" r="15" fill="#1a1208"/>
+          <circle cx="175" cy="58" r="12" fill="#2a2218" stroke="#3a3228" stroke-width="1"/>
+          <circle cx="175" cy="58" r="5" fill="#888070"/>
+          <!-- rim spokes rear -->
+          <g stroke="#554e44" stroke-width="1.5" opacity="0.9">
+            <line x1="175" y1="46" x2="175" y2="70"/>
+            <line x1="163" y1="58" x2="187" y2="58"/>
+            <line x1="166" y1="49" x2="184" y2="67"/>
+            <line x1="166" y1="67" x2="184" y2="49"/>
+          </g>
+          <!-- Tread marks rear -->
+          <circle cx="175" cy="58" r="22" fill="none" stroke="#0a0804" stroke-width="3" stroke-dasharray="4,4"/>
+
+          <!-- Front wheel -->
+          <circle cx="55" cy="58" r="24" fill="#1a1208"/>
+          <circle cx="55" cy="58" r="22" fill="#252015"/>
+          <circle cx="55" cy="58" r="15" fill="#1a1208"/>
+          <circle cx="55" cy="58" r="12" fill="#2a2218" stroke="#3a3228" stroke-width="1"/>
+          <circle cx="55" cy="58" r="5" fill="#888070"/>
+          <!-- rim spokes front -->
+          <g stroke="#554e44" stroke-width="1.5" opacity="0.9">
+            <line x1="55" y1="46" x2="55" y2="70"/>
+            <line x1="43" y1="58" x2="67" y2="58"/>
+            <line x1="46" y1="49" x2="64" y2="67"/>
+            <line x1="46" y1="67" x2="64" y2="49"/>
+          </g>
+          <circle cx="55" cy="58" r="22" fill="none" stroke="#0a0804" stroke-width="3" stroke-dasharray="4,4"/>
+
+          <!-- BODY MAIN - Heritage Green -->
+          <!-- Chassis/underbody -->
+          <rect x="20" y="38" width="210" height="25" rx="2" fill="#2a3820"/>
+          <!-- Main body -->
+          <rect x="18" y="10" width="216" height="32" rx="3" fill="#3a5030"/>
+          <!-- Body highlight top -->
+          <rect x="18" y="10" width="216" height="6" rx="3" fill="#486040" opacity="0.5"/>
+
+          <!-- BONNET/HOOD - flat top distinctive Defender look -->
+          <rect x="18" y="26" width="72" height="16" rx="1" fill="#3a5030"/>
+          <!-- hood center spine -->
+          <rect x="50" y="26" width="3" height="16" fill="#2e4228" opacity="0.6"/>
+          <!-- hood vents/louvers -->
+          <g fill="#2a3820" opacity="0.7">
+            <rect x="24" y="29" width="18" height="2" rx="1"/>
+            <rect x="24" y="33" width="18" height="2" rx="1"/>
+            <rect x="24" y="37" width="18" height="2" rx="1"/>
+            <rect x="58" y="29" width="18" height="2" rx="1"/>
+            <rect x="58" y="33" width="18" height="2" rx="1"/>
+            <rect x="58" y="37" width="18" height="2" rx="1"/>
+          </g>
+
+          <!-- FRONT PANEL (grille area) -->
+          <rect x="8" y="22" width="16" height="26" rx="2" fill="#3a5030"/>
+
+          <!-- GRILLE -->
+          <rect x="4" y="26" width="14" height="18" rx="1" fill="#1a2818" stroke="#2a3820" stroke-width="1"/>
+          <!-- grille bars -->
+          <g fill="#0a1008" opacity="0.8">
+            <rect x="5" y="28" width="12" height="2" rx="0.5"/>
+            <rect x="5" y="32" width="12" height="2" rx="0.5"/>
+            <rect x="5" y="36" width="12" height="2" rx="0.5"/>
+            <rect x="5" y="40" width="12" height="2" rx="0.5"/>
+          </g>
+          <line x1="11" y1="26" x2="11" y2="44" stroke="#0a1008" stroke-width="1.5"/>
+
+          <!-- HEADLIGHTS round -->
+          <circle cx="14" cy="24" r="6" fill="#e8e0b0" stroke="#2a3820" stroke-width="1.5"/>
+          <circle cx="14" cy="24" r="4" fill="#f8f0c0"/>
+          <circle cx="14" cy="24" r="2" fill="white"/>
+          <!-- headlight chrome ring -->
+          <circle cx="14" cy="24" r="6" fill="none" stroke="#888070" stroke-width="0.5"/>
+
+          <!-- WINDSCREEN - angled, split -->
+          <path d="M90,10 L96,3 L152,3 L158,10" fill="#b8d0e0" stroke="#2a3820" stroke-width="1.5" opacity="0.85"/>
+          <!-- windscreen center divider -->
+          <line x1="124" y1="3" x2="124" y2="10" stroke="#2a3820" stroke-width="2"/>
+          <!-- windscreen reflection -->
+          <path d="M94,10 L99,4 L118,4 L112,10 Z" fill="white" opacity="0.12"/>
+          <!-- wipers -->
+          <path d="M98,9 Q112,6 122,8" fill="none" stroke="#1a1a1a" stroke-width="1.2"/>
+          <path d="M126,8 Q138,6 152,9" fill="none" stroke="#1a1a1a" stroke-width="1.2"/>
+
+          <!-- ROOF - flat Defender style -->
+          <rect x="90" y="0" width="144" height="12" rx="2" fill="#344828"/>
+          <!-- roof rack -->
+          <rect x="95" y="-5" width="134" height="7" rx="1" fill="#2a3820" stroke="#1a2818" stroke-width="1"/>
+          <!-- rack crossbars -->
+          <g stroke="#1a2818" stroke-width="1">
+            <line x1="110" y1="-5" x2="110" y2="2"/>
+            <line x1="135" y1="-5" x2="135" y2="2"/>
+            <line x1="160" y1="-5" x2="160" y2="2"/>
+            <line x1="185" y1="-5" x2="185" y2="2"/>
+            <line x1="210" y1="-5" x2="210" y2="2"/>
+          </g>
+          <!-- Jerry cans on rack -->
+          <rect x="98" y="-12" width="14" height="9" rx="1" fill="#8a6a30" stroke="#6a5020" stroke-width="1"/>
+          <rect x="114" y="-12" width="14" height="9" rx="1" fill="#7a5a28" stroke="#6a5020" stroke-width="1"/>
+          <!-- jerry can caps -->
+          <rect x="104" y="-14" width="4" height="3" rx="0.5" fill="#6a5020"/>
+          <rect x="120" y="-14" width="4" height="3" rx="0.5" fill="#6a5020"/>
+
+          <!-- SIDE WINDOWS -->
+          <!-- Front door window -->
+          <rect x="92" y="11" width="58" height="18" rx="1" fill="#a8c4d8" stroke="#2a3820" stroke-width="1" opacity="0.82"/>
+          <!-- window reflection -->
+          <rect x="94" y="12" width="14" height="6" rx="0.5" fill="white" opacity="0.15"/>
+          <!-- Rear door window -->
+          <rect x="152" y="11" width="56" height="18" rx="1" fill="#a8c4d8" stroke="#2a3820" stroke-width="1" opacity="0.75"/>
+          <rect x="154" y="12" width="12" height="6" rx="0.5" fill="white" opacity="0.12"/>
+          <!-- quarter window -->
+          <rect x="210" y="13" width="20" height="14" rx="1" fill="#a8c4d8" stroke="#2a3820" stroke-width="1" opacity="0.65"/>
+
+          <!-- DOOR LINES -->
+          <line x1="150" y1="10" x2="150" y2="38" stroke="#2a3820" stroke-width="2"/>
+          <line x1="209" y1="10" x2="209" y2="38" stroke="#2a3820" stroke-width="1.5"/>
+          <!-- door handles -->
+          <rect x="128" y="30" width="12" height="3" rx="1.5" fill="#888070" stroke="#6a6055" stroke-width="0.5"/>
+          <rect x="170" y="30" width="12" height="3" rx="1.5" fill="#888070" stroke="#6a6055" stroke-width="0.5"/>
+
+          <!-- BODY SIDE STRIPE / protection rail -->
+          <rect x="18" y="34" width="216" height="5" rx="1" fill="#2a1a0a" opacity="0.4"/>
+          <!-- side step -->
+          <rect x="34" y="40" width="160" height="4" rx="1" fill="#1a1208" opacity="0.5"/>
+
+          <!-- REAR PANEL -->
+          <rect x="222" y="10" width="12" height="28" rx="1" fill="#3a5030"/>
+          <!-- rear lights -->
+          <rect x="224" y="14" width="8" height="6" rx="1" fill="#c04030" stroke="#2a3820" stroke-width="0.5"/>
+          <rect x="224" y="22" width="8" height="4" rx="1" fill="#e0c020" stroke="#2a3820" stroke-width="0.5"/>
+
+          <!-- SPARE WHEEL on rear -->
+          <circle cx="246" cy="34" r="20" fill="#1a1208" stroke="#2a3820" stroke-width="1.5"/>
+          <circle cx="246" cy="34" r="18" fill="#252015"/>
+          <circle cx="246" cy="34" r="12" fill="#1a1208"/>
+          <circle cx="246" cy="34" r="9" fill="#2a2218" stroke="#3a3228" stroke-width="1"/>
+          <circle cx="246" cy="34" r="4" fill="#888070"/>
+          <g stroke="#554e44" stroke-width="1.2">
+            <line x1="246" y1="25" x2="246" y2="43"/>
+            <line x1="237" y1="34" x2="255" y2="34"/>
+            <line x1="239" y1="27" x2="253" y2="41"/>
+            <line x1="239" y1="41" x2="253" y2="27"/>
+          </g>
+          <circle cx="246" cy="34" r="18" fill="none" stroke="#0a0804" stroke-width="2.5" stroke-dasharray="3,3"/>
+
+          <!-- SNORKEL -->
+          <rect x="87" y="-10" width="5" height="22" rx="2" fill="#2a3820" stroke="#1a2818" stroke-width="1"/>
+          <rect x="84" y="-10" width="9" height="6" rx="2" fill="#3a4828"/>
+          <!-- snorkel intake -->
+          <ellipse cx="89" cy="-10" rx="5" ry="3" fill="#1a2818"/>
+
+          <!-- FRONT BUMPER -->
+          <rect x="2" y="36" width="20" height="6" rx="1" fill="#2a3820"/>
+          <!-- bull bar -->
+          <path d="M6,36 Q4,30 8,28" fill="none" stroke="#3a4828" stroke-width="2" stroke-linecap="round"/>
+          <path d="M18,36 Q20,30 16,28" fill="none" stroke="#3a4828" stroke-width="2" stroke-linecap="round"/>
+          <line x1="8" y1="28" x2="16" y2="28" stroke="#3a4828" stroke-width="2"/>
+          <!-- tow hooks -->
+          <path d="M6,42 Q4,46 7,46" fill="none" stroke="#888070" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M16,42 Q18,46 15,46" fill="none" stroke="#888070" stroke-width="1.5" stroke-linecap="round"/>
+
+          <!-- REAR BUMPER -->
+          <rect x="220" y="36" width="16" height="5" rx="1" fill="#2a3820"/>
+
+          <!-- MUD FLAPS -->
+          <rect x="30" y="54" width="8" height="12" rx="1" fill="#1a1208" opacity="0.6"/>
+          <rect x="190" y="54" width="8" height="12" rx="1" fill="#1a1208" opacity="0.6"/>
+
+          <!-- DEFENDER badge text -->
+          <text x="160" y="36" font-family="Arial" font-size="5.5" fill="#c8b880" letter-spacing="1.5" opacity="0.8">DEFENDER</text>
+          <!-- 110 badge -->
+          <text x="76" y="36" font-family="Arial" font-size="5" fill="#c8b880" letter-spacing="1" opacity="0.7">110</text>
+        </g>
+
+        <!-- GROUND GRASS details -->
+        <g stroke="#5a7a48" stroke-width="1.5" opacity="0.5">
+          <line x1="140" y1="308" x2="137" y2="298"/>
+          <line x1="148" y1="310" x2="145" y2="300"/>
+          <line x1="158" y1="308" x2="155" y2="298"/>
+          <line x1="700" y1="306" x2="697" y2="296"/>
+          <line x1="710" y1="308" x2="707" y2="298"/>
+          <line x1="720" y1="306" x2="717" y2="296"/>
+          <line x1="740" y1="308" x2="737" y2="298"/>
+        </g>
+
+        <!-- BIRDS in sky -->
+        <g fill="none" stroke="#607888" stroke-width="1.2" opacity="0.5">
+          <path d="M180,68 Q184,64 188,68"/>
+          <path d="M195,62 Q199,58 203,62"/>
+          <path d="M620,45 Q624,41 628,45"/>
+          <path d="M635,38 Q639,34 643,38"/>
+          <path d="M648,50 Q652,46 656,50"/>
+        </g>
+
+      </svg>
+
+      <!-- text overlay on banner -->
+      <div class="banner-overlay"></div>
+      <div style="position:absolute;bottom:16px;left:28px;font-family:'Playfair Display',serif;font-size:13px;font-style:italic;color:rgba(50,35,15,0.55);letter-spacing:0.04em;">
+        Eight points a day drives repeatable pipeline and quota attainment. — Kyle Asay
+      </div>
+    </div>
+
+    <!-- DASHBOARD CONTENT -->
+    <div class="main-content">
+
+      <div class="main-topbar">
+        <div class="main-title">Field <span>Dashboard</span></div>
+        <div class="topbar-badge">
+          <div class="badge-dot"></div>
+          <span id="topbar-score" style="color:var(--text2)">0 / 8 pts</span>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="sc-lbl">Today's Score</div>
+          <div class="sc-val" id="sc-today">0</div>
+          <div class="sc-sub" id="sc-sub">8 pts to quota pace</div>
+          <div class="sc-bar-wrap"><div class="sc-bar" id="sc-bar" style="width:0%;background:var(--orange)"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-lbl">Week Average</div>
+          <div class="sc-val" id="sc-avg" style="color:var(--text3)">—</div>
+          <div class="sc-sub">Target: 8.0 pts/day</div>
+          <div class="sc-bar-wrap"><div class="sc-bar" id="sc-avg-bar" style="width:0%;background:var(--teal)"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-lbl">Status</div>
+          <div class="sc-val" id="sc-status" style="font-size:18px;margin-top:4px;color:var(--text3)">Standby</div>
+          <div class="sc-sub" id="sc-status-sub">no activity logged</div>
+          <div class="sc-bar-wrap"><div class="sc-bar" id="sc-status-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- PROGRESS -->
+      <div class="prog-card">
+        <div class="prog-head">
+          <div class="prog-lbl">Quota pace threshold</div>
+          <div class="prog-num" id="prog-num">0 / 8</div>
+        </div>
+        <div class="prog-track">
+          <div class="prog-fill" id="prog-fill" style="width:0%;background:var(--orange)"></div>
+        </div>
+        <div class="prog-ticks"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span></div>
+      </div>
+
+      <!-- WEEK -->
+      <div class="week-card">
+        <div class="wc-head">
+          <div class="wc-title">Weekly telemetry</div>
+          <div class="wc-avg" id="wc-avg" style="color:var(--text3)">Avg: —</div>
+        </div>
+        <div class="week-cells" id="week-cells"></div>
+      </div>
+
+      <!-- BOTTOM -->
+      <div class="bottom-row">
+        <div class="info-card">
+          <div class="ic-title">Today's breakdown</div>
+          <div class="ic-row">
+            <div class="ic-name">Prospects</div>
+            <div class="ic-bar-wrap"><div class="ic-bar" id="bar-p" style="width:0%;background:var(--orange)"></div></div>
+            <div class="ic-val" id="ic-p" style="color:var(--orange)">0</div>
+          </div>
+          <div class="ic-row">
+            <div class="ic-name">Conversations</div>
+            <div class="ic-bar-wrap"><div class="ic-bar" id="bar-c" style="width:0%;background:var(--orange)"></div></div>
+            <div class="ic-val" id="ic-c" style="color:var(--orange)">0</div>
+          </div>
+          <div class="ic-row">
+            <div class="ic-name">Messages</div>
+            <div class="ic-bar-wrap"><div class="ic-bar" id="bar-m" style="width:0%;background:var(--orange)"></div></div>
+            <div class="ic-val" id="ic-m" style="color:var(--orange)">0</div>
+          </div>
+          <div class="ic-row">
+            <div class="ic-name">Meetings</div>
+            <div class="ic-bar-wrap"><div class="ic-bar" id="bar-mt" style="width:0%;background:var(--teal)"></div></div>
+            <div class="ic-val" id="ic-mt" style="color:var(--teal)">0</div>
+          </div>
+          <div class="ic-row">
+            <div class="ic-name">Opportunities</div>
+            <div class="ic-bar-wrap"><div class="ic-bar" id="bar-o" style="width:0%;background:var(--teal)"></div></div>
+            <div class="ic-val" id="ic-o" style="color:var(--teal)">0</div>
+          </div>
+          <div class="ic-row">
+            <div class="ic-name">Deep learning</div>
+            <div class="ic-bar-wrap"><div class="ic-bar" id="bar-d" style="width:0%;background:var(--warn)"></div></div>
+            <div class="ic-val" id="ic-d" style="color:var(--warn)">0</div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="ic-title">Scoring reference</div>
+          <div class="fw-row"><div class="fw-dot" style="background:var(--orange)"></div><div class="fw-rule">Prospects to cadence</div><div class="fw-pts">1 pt / 10</div></div>
+          <div class="fw-row"><div class="fw-dot" style="background:var(--orange)"></div><div class="fw-rule">Conversations (correct contacts)</div><div class="fw-pts">1 pt each</div></div>
+          <div class="fw-row"><div class="fw-dot" style="background:var(--orange)"></div><div class="fw-rule">Value-based messages Dir+</div><div class="fw-pts">1 pt / 5</div></div>
+          <div class="fw-row"><div class="fw-dot" style="background:var(--teal)"></div><div class="fw-rule">Initial qualifying meetings</div><div class="fw-pts">1 pt each</div></div>
+          <div class="fw-row"><div class="fw-dot" style="background:var(--teal)"></div><div class="fw-rule">Opportunities created</div><div class="fw-pts">1 pt each</div></div>
+          <div class="fw-row"><div class="fw-dot" style="background:var(--warn)"></div><div class="fw-rule">1 hr deep learning (cap)</div><div class="fw-pts">1 pt max</div></div>
+          <div class="fw-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:10px">
+            <div class="fw-dot" style="background:var(--green)"></div>
+            <div class="fw-rule" style="font-weight:600;color:var(--ink)">8 pts/day = quota pace</div>
+            <div class="fw-pts" style="color:var(--green);font-weight:600">Target</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="app">
-
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-main">
-      <div>
-        <div class="hero-label">Today's score</div>
-        <div class="hero-score" id="hero-score">0</div>
-      </div>
-      <div class="hero-target" id="hero-target">— / 8 pts to quota pace</div>
-    </div>
-    <div class="hero-stat">
-      <div class="hero-label">Week avg</div>
-      <div class="hero-stat-val" id="hero-avg" style="color:var(--text2)">—</div>
-      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-top:4px">target 8.0</div>
-    </div>
-    <div class="hero-stat">
-      <div class="hero-label">Status</div>
-      <div class="hero-stat-val" id="hero-status" style="font-size:15px;margin-top:10px;color:var(--text2)">—</div>
-    </div>
-  </div>
-
-  <!-- PROGRESS -->
-  <div class="progress-wrap">
-    <div class="progress-track">
-      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-    </div>
-    <div class="progress-ticks">
-      <span>0</span><span>2</span><span>4</span><span>6</span><span>8</span>
-    </div>
-  </div>
-
-  <!-- PILLARS -->
-  <div class="pillars">
-    <div class="pillar">
-      <div>
-        <div class="pillar-label">Pipeline gen</div>
-      </div>
-      <div class="pillar-val" id="pillar-gen" style="color:var(--gen)">0</div>
-    </div>
-    <div class="pillar">
-      <div>
-        <div class="pillar-label">Pipeline health</div>
-      </div>
-      <div class="pillar-val" id="pillar-health" style="color:var(--health)">0</div>
-    </div>
-    <div class="pillar">
-      <div>
-        <div class="pillar-label">Personal dev</div>
-      </div>
-      <div class="pillar-val" id="pillar-dev" style="color:var(--dev)">0</div>
-    </div>
-  </div>
-
-  <!-- PIPELINE GEN -->
-  <div class="section-head">
-    <div class="section-dot" style="background:var(--gen)"></div>
-    <div class="section-title">Pipeline generation</div>
-  </div>
-  <div class="rows">
-
-    <div class="row">
-      <div class="row-meta">
-        <div class="row-name">Prospects added to cadence</div>
-        <div class="row-rule">1 pt per 10 contacts</div>
-        <div class="ratio-pip-wrap" id="pips-prospects"></div>
-      </div>
-      <div class="row-pts" id="pts-prospects">0 pts</div>
-      <div class="row-control">
-        <button onclick="adjust('prospects',-1)">−</button>
-        <div class="row-val" id="val-prospects">0</div>
-        <button onclick="adjust('prospects',1)">+</button>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="row-meta">
-        <div class="row-name">Conversations (correct contacts)</div>
-        <div class="row-rule">1 pt per conversation</div>
-      </div>
-      <div class="row-pts" id="pts-convos">0 pts</div>
-      <div class="row-control">
-        <button onclick="adjust('convos',-1)">−</button>
-        <div class="row-val" id="val-convos">0</div>
-        <button onclick="adjust('convos',1)">+</button>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="row-meta">
-        <div class="row-name">Value-based messages (Dir+)</div>
-        <div class="row-rule">1 pt per 5 sent</div>
-        <div class="ratio-pip-wrap" id="pips-messages"></div>
-      </div>
-      <div class="row-pts" id="pts-messages">0 pts</div>
-      <div class="row-control">
-        <button onclick="adjust('messages',-1)">−</button>
-        <div class="row-val" id="val-messages">0</div>
-        <button onclick="adjust('messages',1)">+</button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- PIPELINE HEALTH -->
-  <div class="section-head">
-    <div class="section-dot" style="background:var(--health)"></div>
-    <div class="section-title">Pipeline health</div>
-  </div>
-  <div class="rows">
-
-    <div class="row">
-      <div class="row-meta">
-        <div class="row-name">Initial qualifying meetings set</div>
-        <div class="row-rule">1 pt per meeting</div>
-      </div>
-      <div class="row-pts" id="pts-meetings">0 pts</div>
-      <div class="row-control">
-        <button onclick="adjust('meetings',-1)">−</button>
-        <div class="row-val" id="val-meetings">0</div>
-        <button onclick="adjust('meetings',1)">+</button>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="row-meta">
-        <div class="row-name">Opportunities created</div>
-        <div class="row-rule">1 pt per opportunity</div>
-      </div>
-      <div class="row-pts" id="pts-opps">0 pts</div>
-      <div class="row-control">
-        <button onclick="adjust('opps',-1)">−</button>
-        <div class="row-val" id="val-opps">0</div>
-        <button onclick="adjust('opps',1)">+</button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- PERSONAL DEV -->
-  <div class="section-head">
-    <div class="section-dot" style="background:var(--dev)"></div>
-    <div class="section-title">Personal development</div>
-  </div>
-  <div class="rows">
-    <div class="toggle-row">
-      <div class="row-meta">
-        <div class="row-name">1 hr deep learning completed</div>
-        <div class="row-rule">product · personas · territory — 1 pt max</div>
-      </div>
-      <div class="row-pts" id="pts-dev">0 pts</div>
-      <label class="switch">
-        <input type="checkbox" id="val-dev" onchange="recalc()">
-        <span class="switch-track"></span>
-      </label>
-    </div>
-  </div>
-
-  <!-- WEEK -->
-  <div class="section-head" style="margin-top:44px">
-    <div class="section-dot" style="background:var(--text3)"></div>
-    <div class="section-title">This week</div>
-  </div>
-  <div class="week-grid" id="week-grid"></div>
-  <div class="week-summary">
-    <div class="week-summary-label">Weekly average</div>
-    <div class="week-summary-val" id="week-avg-val">—</div>
-  </div>
-
-</div><!-- /app -->
-
 <script>
-const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
-let store = {};
-let offset = 0;
-
-function dateKey(off) {
-  const d = new Date();
-  d.setDate(d.getDate() + (off ?? offset));
-  return d.toISOString().split('T')[0];
+const DAYS=['Mon','Tue','Wed','Thu','Fri'];
+let store={},offset=0;
+function dateKey(o){const d=new Date();d.setDate(d.getDate()+(o??offset));return d.toISOString().split('T')[0];}
+function todayKey(){return dateKey(0);}
+function weekKeys(){const t=new Date(),dow=t.getDay(),diff=dow===0?-6:1-dow;return Array.from({length:5},(_,i)=>{const d=new Date(t);d.setDate(t.getDate()+diff+i);return d.toISOString().split('T')[0];});}
+function fmtLabel(o){if(o===0)return'Today';if(o===-1)return'Yesterday';if(o===1)return'Tomorrow';const d=new Date();d.setDate(d.getDate()+o);return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});}
+function load(){try{store=JSON.parse(localStorage.getItem('ae-light-v1')||'{}');}catch(e){store={};}}
+function save(){localStorage.setItem('ae-light-v1',JSON.stringify(store));}
+function dayData(k){return store[k]||{prospects:0,convos:0,messages:0,meetings:0,opps:0,dev:false};}
+function score(d){
+  const p=Math.floor(d.prospects/10),c=d.convos,m=Math.floor(d.messages/5),mt=d.meetings,o=d.opps,dv=d.dev?1:0;
+  return{p,c,m,mt,o,dv,gen:p+c+m,health:mt+o,total:p+c+m+mt+o+dv};
 }
-
-function todayKey() { return dateKey(0); }
-
-function weekKeys() {
-  const today = new Date();
-  const dow = today.getDay();
-  const diff = dow === 0 ? -6 : 1 - dow;
-  return Array.from({length:5}, (_,i) => {
-    const d = new Date(today);
-    d.setDate(today.getDate() + diff + i);
-    return d.toISOString().split('T')[0];
-  });
+function col(n){if(n>=8)return'var(--green)';if(n>=5)return'var(--warn)';if(n>0)return'var(--orange)';return'var(--text3)';}
+function pct(n,mx){return Math.min(100,(n/mx)*100).toFixed(1)+'%';}
+function pips(id,cur,tot){const el=document.getElementById(id);if(!el)return;el.innerHTML=Array.from({length:tot},(_,i)=>`<div class="pip${i<cur?' on':''}"></div>`).join('');}
+function spts(id,n,cl){const el=document.getElementById(id);if(!el)return;el.textContent=n+' pt'+(n!==1?'s':'');el.className='inp-pts'+(n>0?' on':'');}
+function adjust(f,d){const k=dateKey();if(!store[k])store[k]=dayData(k);store[k][f]=Math.max(0,(store[k][f]||0)+d);save();render();}
+function recalc(){const k=dateKey();if(!store[k])store[k]=dayData(k);store[k].dev=document.getElementById('val-dev').checked;save();render();}
+function render(){
+  const k=dateKey(),d=dayData(k),s=score(d);
+  document.getElementById('val-prospects').textContent=d.prospects;
+  document.getElementById('val-convos').textContent=d.convos;
+  document.getElementById('val-messages').textContent=d.messages;
+  document.getElementById('val-meetings').textContent=d.meetings;
+  document.getElementById('val-opps').textContent=d.opps;
+  document.getElementById('val-dev').checked=d.dev;
+  pips('pips-prospects',d.prospects%10,10);
+  pips('pips-messages',d.messages%5,5);
+  spts('pts-prospects',s.p);spts('pts-convos',s.c);spts('pts-messages',s.m);
+  spts('pts-meetings',s.mt);spts('pts-opps',s.o);
+  const dEl=document.getElementById('pts-dev');
+  dEl.textContent=s.dv+' pt'+(s.dv!==1?'s':'');dEl.className='tog-pts'+(s.dv?' on':'');
+  document.getElementById('pv-gen').textContent=s.gen;
+  document.getElementById('pv-health').textContent=s.health;
+  document.getElementById('pv-dev').textContent=s.dv;
+  // donut
+  const circ=2*Math.PI*50;
+  document.getElementById('donut-fill').style.strokeDashoffset=circ*(1-Math.min(1,s.total/8));
+  document.getElementById('donut-fill').style.stroke=s.total>=8?'var(--green)':s.total>=5?'var(--warn)':'var(--orange)';
+  document.getElementById('donut-num').textContent=s.total;
+  document.getElementById('donut-num').style.color=col(s.total);
+  const st=document.getElementById('donut-status');
+  if(s.total>=8){st.textContent='On Target';st.style.background='var(--green2)';st.style.color='var(--green)';st.style.borderColor='var(--green)';}
+  else if(s.total>=5){st.textContent='Building';st.style.background='rgba(184,120,32,0.1)';st.style.color='var(--warn)';st.style.borderColor='var(--warn)';}
+  else if(s.total>0){st.textContent='Off Pace';st.style.background='var(--orange2)';st.style.color='var(--orange)';st.style.borderColor='var(--orange)';}
+  else{st.textContent='Standby';st.style.background='var(--bg2)';st.style.color='var(--text3)';st.style.borderColor='var(--border2)';}
+  // main
+  const todayEl=document.getElementById('sc-today');
+  todayEl.textContent=s.total;todayEl.style.color=col(s.total);
+  document.getElementById('sc-sub').textContent=s.total>=8?'quota pace achieved':(8-s.total)+' pts to quota pace';
+  document.getElementById('sc-bar').style.width=pct(s.total,8);
+  document.getElementById('sc-bar').style.background=col(s.total);
+  const ssEl=document.getElementById('sc-status');
+  const ssbEl=document.getElementById('sc-status-bar');
+  if(s.total>=8){ssEl.textContent='On Target';ssEl.style.color='var(--green)';document.getElementById('sc-status-sub').textContent='quota pace reached';ssbEl.style.background='var(--green)';}
+  else if(s.total>=5){ssEl.textContent='Building';ssEl.style.color='var(--warn)';document.getElementById('sc-status-sub').textContent=(8-s.total)+' pts to go';ssbEl.style.background='var(--warn)';}
+  else if(s.total>0){ssEl.textContent='Off Pace';ssEl.style.color='var(--orange)';document.getElementById('sc-status-sub').textContent=(8-s.total)+' pts to go';ssbEl.style.background='var(--orange)';}
+  else{ssEl.textContent='Standby';ssEl.style.color='var(--text3)';document.getElementById('sc-status-sub').textContent='no activity logged';ssbEl.style.background='var(--text3)';}
+  ssbEl.style.width=pct(s.total,8);
+  document.getElementById('prog-fill').style.width=pct(s.total,8);
+  document.getElementById('prog-fill').style.background=col(s.total);
+  document.getElementById('prog-num').textContent=s.total+' / 8';
+  document.getElementById('date-lbl').textContent=fmtLabel(offset);
+  const tb=document.getElementById('topbar-score');tb.textContent=s.total+' / 8 pts';tb.style.color=col(s.total);
+  // breakdown
+  const mx=4;
+  document.getElementById('ic-p').textContent=s.p;document.getElementById('bar-p').style.width=pct(s.p,mx);
+  document.getElementById('ic-c').textContent=s.c;document.getElementById('bar-c').style.width=pct(s.c,mx);
+  document.getElementById('ic-m').textContent=s.m;document.getElementById('bar-m').style.width=pct(s.m,mx);
+  document.getElementById('ic-mt').textContent=s.mt;document.getElementById('bar-mt').style.width=pct(s.mt,mx);
+  document.getElementById('ic-o').textContent=s.o;document.getElementById('bar-o').style.width=pct(s.o,mx);
+  document.getElementById('ic-d').textContent=s.dv;document.getElementById('bar-d').style.width=s.dv?'100%':'0%';
+  renderWeek(k);
 }
-
-function formatDateLabel(off) {
-  if (off === 0) return 'Today';
-  if (off === -1) return 'Yesterday';
-  if (off === 1) return 'Tomorrow';
-  const d = new Date();
-  d.setDate(d.getDate() + off);
-  return d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'});
-}
-
-function load() {
-  try { store = JSON.parse(localStorage.getItem('daily-scorer-v2') || '{}'); } catch(e) { store = {}; }
-}
-
-function save() {
-  localStorage.setItem('daily-scorer-v2', JSON.stringify(store));
-}
-
-function dayData(key) {
-  return store[key] || {prospects:0, convos:0, messages:0, meetings:0, opps:0, dev:false};
-}
-
-function score(d) {
-  const prospects = Math.floor(d.prospects / 10);
-  const convos    = d.convos;
-  const messages  = Math.floor(d.messages / 5);
-  const meetings  = d.meetings;
-  const opps      = d.opps;
-  const dev       = d.dev ? 1 : 0;
-  return {
-    prospects, convos, messages, meetings, opps, dev,
-    gen:    prospects + convos + messages,
-    health: meetings + opps,
-    total:  prospects + convos + messages + meetings + opps + dev
-  };
-}
-
-function scoreColor(n) {
-  if (n >= 8) return 'var(--accent)';
-  if (n >= 5) return 'var(--warn)';
-  if (n > 0)  return 'var(--danger)';
-  return 'var(--text3)';
-}
-
-function pctBar(n) { return Math.min(100, (n/8)*100).toFixed(1); }
-
-function buildPips(container, current, total) {
-  const el = document.getElementById(container);
-  if (!el) return;
-  let html = '';
-  for (let i = 0; i < total; i++) {
-    html += `<div class="ratio-pip${i < current ? ' filled' : ''}"></div>`;
-  }
-  el.innerHTML = html;
-}
-
-function adjust(field, delta) {
-  const key = dateKey();
-  if (!store[key]) store[key] = dayData(key);
-  store[key][field] = Math.max(0, (store[key][field] || 0) + delta);
-  save();
-  render();
-}
-
-function recalc() {
-  const key = dateKey();
-  if (!store[key]) store[key] = dayData(key);
-  store[key].dev = document.getElementById('val-dev').checked;
-  save();
-  render();
-}
-
-function loadFields() {
-  const d = dayData(dateKey());
-  document.getElementById('val-prospects').textContent = d.prospects;
-  document.getElementById('val-convos').textContent    = d.convos;
-  document.getElementById('val-messages').textContent  = d.messages;
-  document.getElementById('val-meetings').textContent  = d.meetings;
-  document.getElementById('val-opps').textContent      = d.opps;
-  document.getElementById('val-dev').checked           = d.dev;
-}
-
-function render() {
-  const key = dateKey();
-  const d   = dayData(key);
-  const s   = score(d);
-
-  // fields
-  document.getElementById('val-prospects').textContent = d.prospects;
-  document.getElementById('val-convos').textContent    = d.convos;
-  document.getElementById('val-messages').textContent  = d.messages;
-  document.getElementById('val-meetings').textContent  = d.meetings;
-  document.getElementById('val-opps').textContent      = d.opps;
-  document.getElementById('val-dev').checked           = d.dev;
-
-  // pips for ratio fields
-  buildPips('pips-prospects', d.prospects % 10, 10);
-  buildPips('pips-messages',  d.messages  % 5,  5);
-
-  // pts labels
-  function ptsLabel(n) { return n + ' pt' + (n !== 1 ? 's' : ''); }
-  function setPts(id, n) {
-    const el = document.getElementById(id);
-    el.textContent = ptsLabel(n);
-    el.className = 'row-pts' + (n > 0 ? ' earned' : '');
-  }
-  setPts('pts-prospects', s.prospects);
-  setPts('pts-convos',    s.convos);
-  setPts('pts-messages',  s.messages);
-  setPts('pts-meetings',  s.meetings);
-  setPts('pts-opps',      s.opps);
-  setPts('pts-dev',       s.dev);
-
-  // pillars
-  document.getElementById('pillar-gen').textContent    = s.gen;
-  document.getElementById('pillar-health').textContent = s.health;
-  document.getElementById('pillar-dev').textContent    = s.dev;
-
-  // hero score
-  const heroScore = document.getElementById('hero-score');
-  heroScore.textContent = s.total;
-  heroScore.style.color = scoreColor(s.total);
-
-  const remaining = Math.max(0, 8 - s.total);
-  document.getElementById('hero-target').textContent =
-    s.total >= 8 ? '✓ quota pace reached' : remaining + ' pts to quota pace';
-
-  // progress
-  const fill = document.getElementById('progress-fill');
-  fill.style.width = pctBar(s.total) + '%';
-  fill.style.background = scoreColor(s.total);
-
-  // status
-  const statusEl = document.getElementById('hero-status');
-  if (s.total >= 8)      { statusEl.textContent = 'On track'; statusEl.style.color = 'var(--accent)'; }
-  else if (s.total >= 5) { statusEl.textContent = 'Building'; statusEl.style.color = 'var(--warn)'; }
-  else if (s.total > 0)  { statusEl.textContent = 'Off pace';  statusEl.style.color = 'var(--danger)'; }
-  else                   { statusEl.textContent = 'Not started'; statusEl.style.color = 'var(--text3)'; }
-
-  // topbar
-  document.getElementById('topbar-date').textContent = formatDateLabel(offset);
-  const topStatus = document.getElementById('topbar-status');
-  topStatus.textContent = s.total >= 8 ? '8 / 8' : s.total + ' / 8';
-  topStatus.style.color = scoreColor(s.total);
-
-  // week
-  renderWeek(key);
-}
-
-function renderWeek(currentKey) {
-  const keys = weekKeys();
-  const tKey = todayKey();
-  let grid = '';
-  let scored = [];
-
-  keys.forEach((k, i) => {
-    const d  = dayData(k);
-    const s  = score(d);
-    const isToday   = k === tKey;
-    const isCurrent = k === currentKey;
-    const col = s.total > 0 || isToday ? scoreColor(s.total) : 'var(--text3)';
-    const disp = s.total > 0 || isToday ? s.total : '—';
-    const barW = pctBar(s.total);
-
-    if (s.total > 0 || isToday) scored.push(s.total);
-
-    grid += `<div class="week-cell${isToday?' is-today':''}${isCurrent&&!isToday?' is-current':''}">
-      <div class="week-cell-day">${DAYS[i]}</div>
-      <div class="week-cell-score" style="color:${col}">${disp}</div>
-      <div class="week-cell-bar"><div class="week-cell-bar-fill" style="width:${barW}%;background:${col}"></div></div>
+function renderWeek(ck){
+  const keys=weekKeys(),tKey=todayKey();let html='',scored=[];
+  keys.forEach((k,i)=>{
+    const d=dayData(k),s=score(d),isT=k===tKey,isC=k===ck;
+    const c=col(s.total),disp=s.total>0||isT?s.total:'—',bw=Math.min(100,(s.total/8)*100).toFixed(1);
+    if(s.total>0||isT)scored.push(s.total);
+    html+=`<div class="wc${isT?' today':''}${isC&&!isT?' current':''}">
+      <div class="wc-day">${DAYS[i]}</div>
+      <div class="wc-score" style="color:${c}">${disp}</div>
+      <div class="wc-bar"><div class="wc-fill" style="width:${bw}%;background:${c}"></div></div>
     </div>`;
   });
-
-  document.getElementById('week-grid').innerHTML = grid;
-
-  const avgEl = document.getElementById('hero-avg');
-  const wkEl  = document.getElementById('week-avg-val');
-  if (scored.length) {
-    const avg = (scored.reduce((a,b)=>a+b,0) / scored.length).toFixed(1);
-    avgEl.textContent = avg;
-    avgEl.style.color = scoreColor(parseFloat(avg));
-    wkEl.textContent  = avg + ' pts / day';
-    wkEl.style.color  = scoreColor(parseFloat(avg));
-  } else {
-    avgEl.textContent = '—'; avgEl.style.color = 'var(--text2)';
-    wkEl.textContent  = '—'; wkEl.style.color  = 'var(--text2)';
-  }
+  document.getElementById('week-cells').innerHTML=html;
+  const ae=document.getElementById('sc-avg'),we=document.getElementById('wc-avg');
+  if(scored.length){const avg=(scored.reduce((a,b)=>a+b,0)/scored.length).toFixed(1),ac=col(parseFloat(avg));ae.textContent=avg;ae.style.color=ac;document.getElementById('sc-avg-bar').style.width=pct(parseFloat(avg),8);document.getElementById('sc-avg-bar').style.background=ac;we.textContent='Avg: '+avg+' pts';we.style.color=ac;}
+  else{ae.textContent='—';ae.style.color='var(--text3)';we.textContent='Avg: —';we.style.color='var(--text3)';}
 }
-
-function changeDay(dir) {
-  offset += dir;
-  render();
-}
-
-load();
-render();
+function changeDay(d){offset+=d;render();}
+load();render();
 </script>
 </body>
 </html>
